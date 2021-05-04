@@ -18,6 +18,7 @@
             <span>게시물 수 : {{loop.length}}</span>
             <table class="table mt-3">
                 <thead>
+                    <th>#</th>
                     <th>bno</th>
                     <th>btitle</th>
                     <th>bcontent</th>
@@ -27,6 +28,7 @@
             <tbody> 
             {% endif %}               
             <tr>
+                <td>{{loop.index0}}</td>
                 <td>{{board.bno}}</td>
                 <td>{{board.btitle}}</td>
                 <td>{{board.bcontent}}</td>
