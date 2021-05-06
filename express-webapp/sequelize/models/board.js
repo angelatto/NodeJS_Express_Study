@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
                 정적 메소드인 이유는 클래스 이름으로 막바로 메소드 호출해야 하니까. 
                 매개변수로 models 받는 이유는 db를 넘겨주니까. 
             */
+           // 다 대 일 
+            models.Board.belongsTo(models.User, {foreignKey:"bwriter", targetKey:"userid"});
         }
     }
 
