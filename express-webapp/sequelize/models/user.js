@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             */
            // 일 대 다 
            models.User.hasMany(models.Board, {foreignKey:"bwriter", sourceKey:"userid"});
-
+           models.User.hasMany(models.Order, {foreignKey:"userid", sourceKey:"userid"});
         }
     }
 
