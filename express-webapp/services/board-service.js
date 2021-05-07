@@ -126,7 +126,7 @@ module.exports = {
         }
     },
 
-    // user한명에 대한 정보와 user가 쓴 게시물 정보 다 가져옴. 즉, 2개의 테이블 정보 가져오기 
+    // user한명에 대한 정보와 user가 쓴 게시물 정보 다 가져옴.
     getUserAndBoard: async function(userid){
         try{
             // 방법 1 
@@ -149,6 +149,50 @@ module.exports = {
                 where: {
                     bno: {[Op.lte]: 5 }
                 }
+            });
+            return user;
+        }catch(error){
+            throw error;
+        }
+    },
+
+    getBoardAndUser: async function(bno){
+        try{
+           // 방법1
+            // const board = await db.Board.findOne({
+            //     where: {bno},
+            //     include: [{ model: db.User }]
+            // });
+
+           // 방법2 
+           const board = await db.Board.findOne({
+               where: {bno}
+           });
+           board.dataValues.User = await board.getUser({
+                attributes: ["userid", "username"]
+           });
+
+            return board;
+        }catch(error){
+            throw error;
+        }
+    },
+
+    // 유저 정보로 주문 내역 싹 가져오기 
+    getUserWithOrderInfo: async function(userid){
+        try{
+            const user = await db.User.findOne({
+                attributes: ["userid", "username", "userauthority"],
+                where: {userid},
+                include: [{
+                    model: db.Order,
+                    include: [{
+                        model: db.OrderItem,
+                        include: [{
+                            model: db.Product
+                        }]
+                    }]
+                }]
             });
             return user;
         }catch(error){
