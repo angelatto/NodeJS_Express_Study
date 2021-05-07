@@ -12,7 +12,9 @@ const dotenv = require("dotenv"); // 외부 모듈 : 프로젝트 내에서 .env
 const morgan = require("morgan"); // 외부 모듈 : 로그 관련 미들웨어 
 const cookieParser = require("cookie-parser"); // 외부 모듈 : 쿠키 생성/제거/파싱하는 미들웨어 
 const session = require("express-session");
-const {sequelize} = require("./sequelize/models"); // -> 기본적으로 index를 가져옴, 명시적 작성해도됨 
+const {sequelize} = require("./sequelize/models");
+ // -> 기본적으로 index를 가져옴, 명시적 작성해도됨 
+ // db에서 sequelize 구조분해할당으로 뽑아왔다. 
 
 /* .env 파일을 읽어서 process.env에 추가 */
 dotenv.config();
@@ -33,6 +35,7 @@ const exam08Cookie = require("./routes/exam08-cookie");
 const exam09Session = require("./routes/exam09-session");
 const exam10Router = require("./routes/exam10-router");
 const exam11Sequelize = require("./routes/exam11-sequelize");
+const exam12Auth = require("./routes/exam12-auth");
 
 // 애플리케이션 객체 생성 
 const app = express();
@@ -133,6 +136,7 @@ app.use("/exam08", exam08Cookie);
 app.use("/exam09", exam09Session);
 app.use("/exam10", exam10Router);
 app.use("/exam11", exam11Sequelize);
+app.use("/exam12", exam12Auth);
 
 // 위에서 요청 경로에 걸리지 않으면 아래 404 미들웨어로 들어감 
 // 404 처리 미들웨어 - 주의) 에러 처리 미들웨어는 아님.
