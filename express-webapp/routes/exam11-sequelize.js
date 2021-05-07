@@ -112,4 +112,25 @@ router.get("/path8", async(req, res, next) => {
     }
 });
 
+router.get("/path9", async(req, res, next) => {
+    try{
+        const bno = parseInt(req.query.bno); // get 방식이니까 쿼리에서 꺼내옴 
+        const board = await boardService.getBoardAndUser(bno);
+        res.json(board);
+    }catch(error){
+        next(error);
+    }
+});
+
+router.get("/path11", async (req, res, next) => {
+    try{
+       const userId = req.query.userid;
+       const user = await boardService.getUserWithOrderInfo(userId);
+       res.json(user);
+    }catch(error){
+       console.log(error);
+       next(error);
+    }
+});
+
 module.exports = router;
