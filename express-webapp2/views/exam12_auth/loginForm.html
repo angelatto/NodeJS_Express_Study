@@ -46,8 +46,6 @@
           method: "post",
           data: {userid, userpassword}
         }).done(data => {
-          // login2에서 정상 응답 온 JSON 데이터를 세션 스토리지에 저장 
-          // 왜? 동일한 브라우저가 리프레시되어도 데이터가 유지되도록 하기 위함이다. 
           sessionStorage.setItem("userid", data.userid);
           sessionStorage.setItem("authToken", data.authToken);
           location.href="/exam12";

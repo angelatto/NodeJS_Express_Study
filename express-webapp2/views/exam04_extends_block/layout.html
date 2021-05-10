@@ -1,0 +1,44 @@
+<!-- 공통 레이아웃 파일, 너는 그냥 템플릿이라고 생각하면됨 -->
+
+{% include "common/header.html" %}
+
+<div class="card">
+    <div class="card-header">
+      exam04_extends_block
+    </div>
+  
+    <div class="card-body">
+      <div>
+        {% block content1 %}  <!-- 블록 이름 content1 -->
+        {% endblock %}
+      </div>
+      <hr/>
+      <div>
+        {% block content2 %}  <!-- 블록 이름 content2 -->
+        {% endblock %}
+      </div>
+      <hr/>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>bno</th>
+            <th>btitle</th>
+            <th>bcontent</th>
+            <th>bwriter</th>
+            <th>bdate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{board.bno}}</td>
+            <td>{{board.btitle}}</td>
+            <td>{{board.bcontent}}</td>
+            <td>{{board.bwriter}}</td>
+            <td>{{board.bdate}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+{% include "common/footer.html" %}
