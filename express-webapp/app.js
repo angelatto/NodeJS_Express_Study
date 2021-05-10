@@ -15,6 +15,9 @@ const session = require("express-session");
 const {sequelize} = require("./sequelize/models");
  // -> 기본적으로 index를 가져옴, 명시적 작성해도됨 
  // db에서 sequelize 구조분해할당으로 뽑아왔다. 
+const sessionAuth = require("./security/sessionAuth");
+const jwtAuth = require("./security/jwtAuth");
+const cors = require("cors");
 
 /* .env 파일을 읽어서 process.env에 추가 */
 dotenv.config();
@@ -36,6 +39,7 @@ const exam09Session = require("./routes/exam09-session");
 const exam10Router = require("./routes/exam10-router");
 const exam11Sequelize = require("./routes/exam11-sequelize");
 const exam12Auth = require("./routes/exam12-auth");
+// const exam13Cors = require("./routes/exam13-cors");
 
 // 애플리케이션 객체 생성 
 const app = express();
@@ -58,10 +62,26 @@ sequelize.sync()
         console.log("DB 연결 실패: " + err.message);
     });
 
+// Cors 설정 - REST API 만들때 반드시 필요 
+// app.use((req, res, next) => {
+//     res.set("Access-Control-Allow-Origin", "*"); // 밑에 크리덴셜 트루이면 여기 아스타는 안됨 
+//     res.set("Access-Control-Allow-Credentials", "false");  // JWT 쿠키 인증일 경우에만 true 
+//     res.set("Access-Control-Allow-Headers", "*"); 
+//     res.set("Access-Control-Allow-Methods", "*"); 
+//     next();
+// });
+app.use(cors({
+    origin: "*",
+    allowedHeaders: "*",
+    methods: "*",
+    credentials: false
+}))
 
 // 정적 파일들을 제공하는 폴더 생성 
 // app.use(express.static(__dirname + "/public")); 아래와 같은 코드임
 const middlewareFunction = express.static(path.join(__dirname, "public"));
+// Front 프로젝트 삽입 - 뭘 넣어야 할지?? 
+//const middlewareFunction = express.static(path.join(__dirname, "angular"));
 app.use(middlewareFunction);
 
 // 모든 요청 경로에 실행되는 미들웨어 
@@ -120,6 +140,17 @@ app.use(session({
    데이터를  설정하는 미들웨어 적용 */
 app.use((req, res, next) => {
     res.locals.uid = req.session.uid || null;
+    // 1. 세션 인증일 경우 
+    //sessionAuth.setAuth(req, res); 
+    /*
+        --------위 코드 중요!!! ----------
+        그냥 요청할 때는 파라미터에 userid 안들어감
+        로그인 요청할 때는 (req, res, userid)
+        res.locals.userid = req.session.userid
+         이 코드로 대체해도됨 , 로그인 안되었으면 undefined 
+     */ 
+    // 2. JWT 인증일 경우 
+    jwtAuth.setAuth(req, res);
     next();
 });
 
@@ -135,8 +166,11 @@ app.use("/exam07", exam07MultipartFormData);
 app.use("/exam08", exam08Cookie);
 app.use("/exam09", exam09Session);
 app.use("/exam10", exam10Router);
-app.use("/exam11", exam11Sequelize);
+// app.use("/exam11", sessionAuth.checkAuth, exam11Sequelize); 
+app.use("/exam11", jwtAuth.checkAuth, exam11Sequelize); 
+// 중요: 로그인 되었을 때만 라우터로 넘어가기 위해 중간에 미들웨어 설정 
 app.use("/exam12", exam12Auth);
+// app.use("/exam13", exam13Cors);
 
 // 위에서 요청 경로에 걸리지 않으면 아래 404 미들웨어로 들어감 
 // 404 처리 미들웨어 - 주의) 에러 처리 미들웨어는 아님.
@@ -150,7 +184,7 @@ app.use((req, res, next) => {
     next(error); // 에러 처리 모듈로 넘겨준다. 
 });
 
-// 모든 에러 처리하는 미들웨어 
+// 모든 에러 처리하는 미들웨어 => 3일 뒤 발표할 때 여기 잘 발표해야함 
 app.use((err, req, res, next) => {
     const error = (process.env.NODE_ENV !== "production")? err: {};
     error.message = req.method + " " + req.url + " : " + err.message;
