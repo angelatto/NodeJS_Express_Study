@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <script type="module">
+        // 외부모듈을 가져올때는 반드시 type=module 속성이 필요하다. 
+        // 순서 중요 - export default 부터 먼저 선언해야 한다. 
+        import fun3, {fun1, fun2} from "./test.js"; 
+        fun1();
+        fun2();
+        fun3();
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
