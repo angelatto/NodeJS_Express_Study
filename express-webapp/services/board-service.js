@@ -144,7 +144,9 @@ module.exports = {
             const user = await db.User.findOne({
                 where: {userid}
             });
-            // user가 일반적인 자바스크립트 객체가 아니라서 dataValues 필요하다 
+
+            // 중요 ------------------
+            // 프로미스 결과로 리턴되는 객체인 user는 일반적인 자바스크립트 객체가 아니라서 dataValues 필요하다 
             user.dataValues.Boards = await user.getBoards({
                 where: {
                     bno: {[Op.lte]: 5 }
